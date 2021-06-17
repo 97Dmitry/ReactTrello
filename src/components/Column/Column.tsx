@@ -1,67 +1,82 @@
-import React, {ReactNode, useState} from "react";
-import styled from "styled-components";
+import React, { ReactNode, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import * as c from "./style";
+import { CloseButton } from "./style";
+import { lStorage } from "../../utils";
 import Card from "../Card/Card";
 
-const ColumnWrapper = styled.div`
-  width: 25%;
-  height: max-content;
-  margin: 15px 20px 0;
-  padding: 15px;
-  background: #EBECF0;
-`;
-
-const ColumnTitle = styled.h1`
-  padding: 15px;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  display: flex;
-
-  justify-content: center;
-  align-items: center;
-`;
-
-const Input = styled.input`
-
-`;
-
-const AddButton = styled.button`
-`;
-
 interface ColumnProps {
+  columnName: string;
   children: ReactNode;
 }
 
-const Column: React.FC<ColumnProps> = ({children}) => {
-  let [addCard, setBoll] = useState(false);
+const Column: React.FC<ColumnProps> = ({ columnName, children }) => {
+  const columnCards: Array<any> = [];
+
+  let [addCard, setBool] = useState(false);
   let [inp, setInp] = useState("");
-  let [arr, setArr] = useState<Array<any>>([])
+  let cards = lStorage(columnName);
+
+  let [arr, setArr] = useState<Record<any, any>>(cards ? cards : {});
+  // let [index, setIndex] = useState(cards ? Object.keys(cards).length : 0);
+
+  if (cards) {
+    Object.keys(cards).forEach((e) => {
+      columnCards.push(
+        <Card
+          text={cards[e].title}
+          key={`${columnName}-${e}`}
+          cardID={e}
+          column={columnName}
+        />
+      );
+    });
+  }
+
   return (
-    <ColumnWrapper>
-      <ColumnTitle>{children}</ColumnTitle>
-      {arr}
-      {addCard
-        ? <>
-          <Input
-            type="text"
+    <c.ColumnWrapper data-column={columnName}>
+      <c.ColumnTitle>{children}</c.ColumnTitle>
+      {columnCards}
+      {addCard ? (
+        <>
+          <c.Input
             placeholder={"Input card name"}
             value={inp}
             onChange={(e) => {
-              setInp(inp = e.target.value);
+              setInp((inp = e.target.value));
             }}
           />
-          <AddButton
+          <c.AddButton
             onClick={() => {
-              setArr(arr = [...arr, <Card text={inp} key={arr.length || 0}/>])
+              if (inp.length) {
+                setArr((arr = { ...arr, [uuidv4()]: { title: inp } }));
+                lStorage(columnName, arr);
+                setInp((inp = ""));
+              }
             }}
           >
             Add
-          </AddButton>
+          </c.AddButton>
+          <CloseButton
+            onClick={() => {
+              setBool(!addCard);
+              setInp((inp = ""));
+            }}
+          >
+            <i className="material-icons">edit_off</i>
+          </CloseButton>
         </>
-        : <Button onClick={() => setBoll(!addCard)}><i className="material-icons">note_add</i>Add
-          another card</Button>}
-    </ColumnWrapper>
+      ) : (
+        <c.Button
+          onClick={() => {
+            setBool(!addCard);
+          }}
+          width={"100%"}
+        >
+          <i className="material-icons">note_add</i>Add another card
+        </c.Button>
+      )}
+    </c.ColumnWrapper>
   );
 };
 
