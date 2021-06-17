@@ -25,9 +25,11 @@ const Column: React.FC<ColumnProps> = ({ columnName, children }) => {
       columnCards.push(
         <Card
           text={cards[e].title}
-          key={`${columnName}-${e}`}
+          key={e}
           cardID={e}
           column={columnName}
+          arr={arr}
+          setArr={setArr}
         />
       );
     });
@@ -52,6 +54,7 @@ const Column: React.FC<ColumnProps> = ({ columnName, children }) => {
                 setArr((arr = { ...arr, [uuidv4()]: { title: inp } }));
                 lStorage(columnName, arr);
                 setInp((inp = ""));
+                setBool((addCard = !addCard));
               }
             }}
           >
@@ -59,7 +62,7 @@ const Column: React.FC<ColumnProps> = ({ columnName, children }) => {
           </c.AddButton>
           <CloseButton
             onClick={() => {
-              setBool(!addCard);
+              setBool((addCard = !addCard));
               setInp((inp = ""));
             }}
           >
@@ -69,7 +72,7 @@ const Column: React.FC<ColumnProps> = ({ columnName, children }) => {
       ) : (
         <c.Button
           onClick={() => {
-            setBool(!addCard);
+            setBool((addCard = !addCard));
           }}
           width={"100%"}
         >

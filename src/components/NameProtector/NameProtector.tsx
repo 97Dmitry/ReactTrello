@@ -4,6 +4,7 @@ import styled from "styled-components";
 interface NameProtectorComponentInterface {
   isActive: number;
 }
+
 const NameProtectorComponent = styled.div<NameProtectorComponentInterface>`
   position: absolute;
   width: 100vw;
@@ -39,9 +40,6 @@ const Input = styled.input.attrs({
   padding: 5px;
 `;
 
-// interface NameProtectorProps {
-//   isActive: number;
-// }
 const NameProtector: React.FC = () => {
   let [inp, setInp] = useState("");
   let [isActive, setIsActive] = useState(

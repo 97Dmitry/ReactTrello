@@ -31,16 +31,19 @@ interface CardText {
   text: string;
   column: string;
   cardID: string;
+  arr: any;
+  setArr: any;
 }
-const Card: React.FC<CardText> = ({ text, cardID, column }) => {
+
+const Card: React.FC<CardText> = ({ text, cardID, column, arr, setArr }) => {
   return (
     <CardStyle data-type="Card">
       <p style={{ wordWrap: "break-word", paddingRight: "20px" }}>{text}</p>
       <Delete
         onClick={(event: { target: any }) => {
-          console.log(event.target.closest("[data-type='Card']"));
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          event.target.closest("[data-type='Card']").remove();
+          delete arr[cardID];
+          const newArr = arr;
+          setArr((arr = { ...newArr }));
           let newStorage = lStorage(column);
           delete newStorage[cardID];
           lStorage(column, newStorage);
