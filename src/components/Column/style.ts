@@ -12,6 +12,10 @@ export const ColumnTitle = styled.h1`
   padding: 15px;
 `;
 
+export const NameInput = styled.input`
+  margin: 15px;
+`;
+
 interface ButtonProps {
   width: string;
 }

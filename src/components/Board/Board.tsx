@@ -8,16 +8,16 @@ const BoardStyle = styled.div`
   width: 100%;
   margin: 25px;
   border-radius: 20px;
-  background: #28aecb;
+  background: rgba(40, 174, 203, 0.85);
 `;
 
 const Board: React.FC = () => {
   return (
     <BoardStyle>
-      <Column columnName={"todo"}>TODO</Column>
-      <Column columnName={"progress"}>In Progress</Column>
-      <Column columnName={"testing"}>Testing</Column>
-      <Column columnName={"done"}>Done</Column>
+      <Column columnName={"todo"} columnText={"TODO"} />
+      <Column columnName={"progress"} columnText={"In Progress"} />
+      <Column columnName={"testing"} columnText={"Testing"} />
+      <Column columnName={"done"} columnText={"Done"} />
     </BoardStyle>
   );
 };

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { lStorage } from "../../utils";
 
-const CardStyle = styled.div`
+const CardComponent = styled.div`
   position: relative;
   box-shadow: 1px 5px 10px 2px rgba(34, 60, 80, 0.2);
   background: white;
@@ -28,22 +28,30 @@ const Delete = styled.button`
 `;
 
 interface CardText {
-  text: string;
+  cardName: string;
   column: string;
   cardID: string;
-  arr: any;
-  setArr: any;
+  cardsInfo: any;
+  setCardsInfo: any;
 }
 
-const Card: React.FC<CardText> = ({ text, cardID, column, arr, setArr }) => {
+const Card: React.FC<CardText> = ({
+  cardName,
+  cardID,
+  column,
+  cardsInfo,
+  setCardsInfo,
+}) => {
+  let [popUpIsActive, setPopUpIsActive] = useState(false);
+
   return (
-    <CardStyle data-type="Card">
-      <p style={{ wordWrap: "break-word", paddingRight: "20px" }}>{text}</p>
+    <CardComponent data-type="Card">
+      <p style={{ wordWrap: "break-word", paddingRight: "20px" }}>{cardName}</p>
       <Delete
-        onClick={(event: { target: any }) => {
-          delete arr[cardID];
-          const newArr = arr;
-          setArr((arr = { ...newArr }));
+        onClick={() => {
+          delete cardsInfo[cardID];
+          const newArr = cardsInfo;
+          setCardsInfo((cardsInfo = { ...newArr }));
           let newStorage = lStorage(column);
           delete newStorage[cardID];
           lStorage(column, newStorage);
@@ -51,7 +59,7 @@ const Card: React.FC<CardText> = ({ text, cardID, column, arr, setArr }) => {
       >
         <i className="material-icons">delete</i>
       </Delete>
-    </CardStyle>
+    </CardComponent>
   );
 };
 

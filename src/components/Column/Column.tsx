@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import * as c from "./style";
 import { CloseButton } from "./style";
@@ -7,52 +7,72 @@ import Card from "../Card/Card";
 
 interface ColumnProps {
   columnName: string;
-  children: ReactNode;
+  columnText: string;
 }
 
-const Column: React.FC<ColumnProps> = ({ columnName, children }) => {
+const Column: React.FC<ColumnProps> = ({ columnName, columnText }) => {
   const columnCards: Array<any> = [];
 
   let [addCard, setBool] = useState(false);
   let [inp, setInp] = useState("");
-  let cards = lStorage(columnName);
+  let [name, setName] = useState(lStorage(columnName)?.name || columnText);
+  let [isChangeName, setChangeName] = useState(false);
 
-  let [arr, setArr] = useState<Record<any, any>>(cards ? cards : {});
-  // let [index, setIndex] = useState(cards ? Object.keys(cards).length : 0);
+  let cards = lStorage(columnName);
+  let [cardsInfo, setCardsInfo] = useState<Record<any, any>>(
+    cards ? cards : {}
+  );
 
   if (cards) {
     Object.keys(cards).forEach((e) => {
-      columnCards.push(
-        <Card
-          text={cards[e].title}
-          key={e}
-          cardID={e}
-          column={columnName}
-          arr={arr}
-          setArr={setArr}
-        />
-      );
+      if (e.length > 15) {
+        columnCards.push(
+          <Card
+            cardName={cards[e].title}
+            key={e}
+            cardID={e}
+            column={columnName}
+            cardsInfo={{ ...cardsInfo }}
+            setCardsInfo={setCardsInfo}
+          />
+        );
+      }
     });
   }
 
   return (
     <c.ColumnWrapper data-column={columnName}>
-      <c.ColumnTitle>{children}</c.ColumnTitle>
+      {!isChangeName ? (
+        <c.ColumnTitle onDoubleClick={() => setChangeName(!isChangeName)}>
+          {name}
+        </c.ColumnTitle>
+      ) : (
+        <c.NameInput
+          value={name}
+          onChange={(event) => setName((name = event.target.value))}
+          onBlur={() => {
+            setChangeName(!isChangeName);
+            lStorage(columnName, { ...lStorage(columnName), name: name });
+          }}
+        />
+      )}
       {columnCards}
       {addCard ? (
         <>
           <c.Input
             placeholder={"Input card name"}
             value={inp}
-            onChange={(e) => {
-              setInp((inp = e.target.value));
+            onChange={(event) => {
+              setInp((inp = event.target.value));
             }}
           />
           <c.AddButton
             onClick={() => {
               if (inp.length) {
-                setArr((arr = { ...arr, [uuidv4()]: { title: inp } }));
-                lStorage(columnName, arr);
+                setCardsInfo(
+                  (cardsInfo = { ...cardsInfo, [uuidv4()]: { title: inp } })
+                );
+                lStorage(columnName, cardsInfo);
                 setInp((inp = ""));
                 setBool((addCard = !addCard));
               }
