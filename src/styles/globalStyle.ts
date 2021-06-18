@@ -20,6 +20,6 @@ const Global = createGlobalStyle`
   h1, h2, h3, h4, h5, h6 {font-size: inherit;font-weight: 400;margin: 0;}
   li {list-style-type: none;}
   ul, ol {margin-left: 0;padding-left: 0;}
-`
+`;
 
-export default Global
+export default Global;
