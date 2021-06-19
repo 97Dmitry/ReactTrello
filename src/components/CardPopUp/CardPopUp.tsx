@@ -96,14 +96,12 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
             onFocus={(event) => {
               event.target.style.outline = "2px solid #0079bf";
             }}
-            onBlurCapture={(event) => {
-              event.target.style.outline = "none";
-            }}
             value={cardName}
             onChange={(event) => {
               setCardNameState((cardName = event.target.value));
             }}
-            onBlur={() => {
+            onBlur={(event) => {
+              event.target.style.outline = "none";
               lStorage(column, {
                 ...lStorage(column),
                 [cardID]: { ...lStorage(column)[cardID], title: cardName },
