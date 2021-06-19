@@ -6,9 +6,9 @@ const Global = createGlobalStyle`
   :focus, :active {outline: none;}
   a:focus, a:active {outline: none;}
   nav, footer, header, aside {display: block;}
-  html, body {height: 100%;width: 100%;
-    line-height: 1;font-size: 14px;font-size: 100%;-ms-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;}
+  //html, body {height: 100%;width: 100%;
+  //  line-height: 1;font-size: 18px;-ms-text-size-adjust: 100%;
+  //  -moz-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;}
   input, button, textarea {font-family: inherit;}
   input::-ms-clear {display: none;}
   button {cursor: pointer;}
@@ -17,7 +17,7 @@ const Global = createGlobalStyle`
   a:hover {text-decoration: none;}
   ul li {list-style: none;}
   img {vertical-align: top;}
-  h1, h2, h3, h4, h5, h6 {font-size: inherit;font-weight: 400;margin: 0;}
+  //h1, h2, h3, h4, h5, h6 {font-size: inherit;font-weight: 400;margin: 0;}
   li {list-style-type: none;}
   ul, ol {margin-left: 0;padding-left: 0;}
 `;
