@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { lStorage } from "../../utils";
+import CardPopUp from "../CardPopUp/CardPopUp";
 
 const CardComponent = styled.div`
   position: relative;
@@ -16,7 +17,14 @@ const CardComponent = styled.div`
   }
 `;
 
+const CardText = styled.p`
+  padding-right: 15px;
+  word-break: break-word;
+  word-wrap: break-word;
+`;
+
 const Delete = styled.button`
+  display: block;
   position: absolute;
   right: 0;
   top: 0;
@@ -27,39 +35,72 @@ const Delete = styled.button`
   }
 `;
 
-interface CardText {
+interface CardInterface {
   cardName: string;
   column: string;
+  columnName: string;
   cardID: string;
-  cardsInfo: any;
+  cardsInfo: Record<string, any>;
   setCardsInfo: any;
 }
 
-const Card: React.FC<CardText> = ({
+const Card: React.FC<CardInterface> = ({
   cardName,
   cardID,
   column,
+  columnName,
   cardsInfo,
   setCardsInfo,
 }) => {
   let [popUpIsActive, setPopUpIsActive] = useState(false);
+  let [cardNameState, setCardNameState] = useState(cardName);
+  let [cardComments, setCardComments] = useState<Record<string, any>>(
+    lStorage(column)[cardID]["comments"] || {}
+  );
 
   return (
-    <CardComponent data-type="Card">
-      <p style={{ wordWrap: "break-word", paddingRight: "20px" }}>{cardName}</p>
-      <Delete
-        onClick={() => {
-          delete cardsInfo[cardID];
-          const newArr = cardsInfo;
-          setCardsInfo((cardsInfo = { ...newArr }));
-          let newStorage = lStorage(column);
-          delete newStorage[cardID];
-          lStorage(column, newStorage);
-        }}
+    <>
+      <CardComponent
+        onClick={() => setPopUpIsActive((popUpIsActive = !popUpIsActive))}
+        data-type="Card"
       >
-        <i className="material-icons">delete</i>
-      </Delete>
-    </CardComponent>
+        <CardText>{cardNameState}</CardText>
+        <Delete
+          onClick={() => {
+            delete cardsInfo[cardID];
+            const newArr = cardsInfo;
+            setCardsInfo((cardsInfo = { ...newArr }));
+            let newStorage = lStorage(column);
+            delete newStorage[cardID];
+            lStorage(column, newStorage);
+          }}
+        >
+          <i className="material-icons">delete</i>
+        </Delete>
+        {Object.keys(cardComments).length ? (
+          <>
+            <hr style={{ border: "1px solid black", marginTop: "5px" }} />
+            <br />
+            <p>Comments count: {Object.keys(cardComments).length}</p>
+          </>
+        ) : null}
+      </CardComponent>
+      {popUpIsActive ? (
+        <CardPopUp
+          cardName={cardNameState}
+          setCardNameState={setCardNameState}
+          cardID={cardID}
+          column={column}
+          columnName={columnName}
+          cardsInfo={cardsInfo}
+          setCardsInfo={setCardsInfo}
+          isActive={popUpIsActive}
+          setIsActive={setPopUpIsActive}
+          cardComments={cardComments}
+          setCardComments={setCardComments}
+        />
+      ) : null}
+    </>
   );
 };
 

@@ -2,17 +2,23 @@ import styled from "styled-components";
 
 export const ColumnWrapper = styled.div`
   width: 25%;
+
   height: max-content;
   margin: 15px 20px 0;
   padding: 15px;
   background: #ebecf0;
 `;
 
-export const ColumnTitle = styled.h1`
+export const ColumnTitle = styled.p`
+  font-size: 30px;
+  font-weight: 700;
+
   padding: 15px;
 `;
 
 export const NameInput = styled.input`
+  font-size: 30px;
+  font-weight: 700;
   margin: 15px;
 `;
 

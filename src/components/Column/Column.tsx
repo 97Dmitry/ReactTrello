@@ -32,6 +32,7 @@ const Column: React.FC<ColumnProps> = ({ columnName, columnText }) => {
             key={e}
             cardID={e}
             column={columnName}
+            columnName={name}
             cardsInfo={{ ...cardsInfo }}
             setCardsInfo={setCardsInfo}
           />
