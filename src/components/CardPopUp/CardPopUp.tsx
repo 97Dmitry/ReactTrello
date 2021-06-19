@@ -4,6 +4,7 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import styled from "styled-components";
 import { lStorage } from "../../utils";
 import Comments from "./Comments/Comments";
+import Description from "../Description/Description";
 
 const CardPopUpComponent = styled.div`
   position: absolute;
@@ -121,6 +122,7 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
             {localStorage.getItem("username")}
           </span>
         </p>
+        <Description cardID={cardID} column={column} />
         <Comments
           cardComments={cardComments}
           setCardComments={setCardComments}

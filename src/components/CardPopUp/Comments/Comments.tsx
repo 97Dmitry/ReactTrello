@@ -24,17 +24,6 @@ const AddButton = styled.button`
   border-radius: 20px;
 `;
 
-// const Comment = styled.div`
-//   border: 1px solid #2a2a2a;
-//   border-radius: 15px;
-//   padding: 10px;
-//   margin-top: 4px;
-//   word-wrap: break-word;
-//
-//   display: flex;
-//   justify-content: space-between;
-// `;
-
 interface CommentsInterface {
   cardComments: Record<string, any>;
   setCardComments: any;
