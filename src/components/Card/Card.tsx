@@ -54,13 +54,10 @@ const Card: React.FC<CardInterface> = ({
 }) => {
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [cardNameState, setCardNameState] = useState(cardName);
-  const [cardComments, setCardComments] = useState<Record<string, any>>(
-    lStorage(column)?.[cardID]?.["comments"] || {}
-  );
 
   function cardDeleteHandler() {
     setCardsInfo(() => {
-      const data = cardsInfo;
+      const data = { ...cardsInfo };
       delete data[cardID];
       lStorage(column, { ...data });
       return data;
@@ -77,18 +74,21 @@ const Card: React.FC<CardInterface> = ({
         <Delete onClick={cardDeleteHandler}>
           <i className="material-icons">delete</i>
         </Delete>
-        {Object.keys(cardComments).length ? (
+        {Object.keys(cardsInfo[cardID]["comments"]).length ? (
           <>
             <hr style={{ border: "1px solid black", marginTop: "5px" }} />
             <br />
-            <p>Comments count: {Object.keys(cardComments).length}</p>
+            <p>
+              Comments count:{" "}
+              {Object.keys(cardsInfo[cardID]["comments"]).length}
+            </p>
           </>
         ) : null}
       </CardComponent>
       {popUpIsActive ? (
         <CardPopUp
           cardName={cardNameState}
-          setCardNameState={setCardNameState}
+          setCardName={setCardNameState}
           cardID={cardID}
           column={column}
           columnTitle={columnTitle}
@@ -96,8 +96,6 @@ const Card: React.FC<CardInterface> = ({
           setCardsInfo={setCardsInfo}
           isActive={popUpIsActive}
           setIsActive={setPopUpIsActive}
-          cardComments={cardComments}
-          setCardComments={setCardComments}
         />
       ) : null}
     </>

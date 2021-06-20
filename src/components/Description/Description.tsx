@@ -10,16 +10,25 @@ const DescriptionComponent = styled.div`
 interface DescriptionInterface {
   column: string;
   cardID: string;
+  cardsInfo: Record<string, any>;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
-const Description: React.FC<DescriptionInterface> = ({ column, cardID }) => {
+const Description: React.FC<DescriptionInterface> = ({
+  column,
+  cardID,
+  cardsInfo,
+  setCardsInfo,
+}) => {
   const [description, setDescription] = useState(
     lStorage(column)[cardID]["description"] || ""
   );
 
-  function descriptionSaveHandler() {
-    lStorage(column, {
-      ...lStorage(column),
-      [cardID]: { ...lStorage(column)[cardID], description },
+  function changeDescriptionHandler() {
+    setCardsInfo(() => {
+      const data = { ...cardsInfo };
+      data[cardID]["description"] = description;
+      lStorage(column, { ...data });
+      return data;
     });
   }
 
@@ -48,7 +57,7 @@ const Description: React.FC<DescriptionInterface> = ({ column, cardID }) => {
       <Button
         variant="contained"
         color="primary"
-        onClick={descriptionSaveHandler}
+        onClick={changeDescriptionHandler}
       >
         Save or change
       </Button>

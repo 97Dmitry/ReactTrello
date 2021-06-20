@@ -33,41 +33,51 @@ const AddButton = styled.button`
 `;
 
 interface CommentsInterface {
-  cardComments: Record<string, any>;
-  setCardComments: React.Dispatch<Record<string, any>>;
   column: string;
   cardID: string;
+  cardsInfo: Record<string, any>;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
 const Comments: React.FC<CommentsInterface> = ({
-  cardComments,
-  setCardComments,
   column,
   cardID,
+  cardsInfo,
+  setCardsInfo,
 }) => {
   const [comment, setComment] = useState("");
 
+  function commentSaveHandler() {
+    const id = uuidv4();
+    console.log(id);
+    setCardsInfo(() => {
+      const data = cardsInfo;
+      data[cardID]["comments"][id] = {
+        comment,
+        author: localStorage.getItem("username"),
+      };
+      lStorage(column, { ...data });
+      return data;
+    });
+  }
+
   return (
     <>
-      {Object.keys(cardComments).length ? (
+      {Object.keys(cardsInfo[cardID]["comments"]).length ? (
         <>
           <p style={{ marginTop: "10px" }}>All comments:</p>
           <AllComments>
-            {Object.keys(cardComments).reduce<JSX.Element[]>(
-              (acc: JSX.Element[], e) => {
-                acc.push(
-                  <Comment
-                    cardComments={cardComments}
-                    setCardComments={setCardComments}
-                    cardID={cardID}
-                    commentID={e}
-                    column={column}
-                    key={e}
-                  />
-                );
-                return acc;
-              },
-              []
-            )}
+            {Object.keys(cardsInfo[cardID]["comments"]).map((e: string) => {
+              return (
+                <Comment
+                  cardsInfo={cardsInfo}
+                  setCardsInfo={setCardsInfo}
+                  cardID={cardID}
+                  commentID={e}
+                  column={column}
+                  key={e}
+                />
+              );
+            })}
           </AllComments>
         </>
       ) : null}
@@ -82,26 +92,7 @@ const Comments: React.FC<CommentsInterface> = ({
       />
       <AddButton
         onClick={() => {
-          const id = uuidv4();
-          setCardComments(
-            (cardComments = {
-              ...cardComments,
-              [id]: {
-                comment,
-                author: localStorage.getItem("username"),
-              },
-            })
-          );
-          lStorage(column, {
-            ...lStorage(column),
-            [cardID]: {
-              ...lStorage(column)[cardID],
-              comments: {
-                ...lStorage(column)[cardID]["comments"],
-                [id]: { comment, author: localStorage.getItem("username") },
-              },
-            },
-          });
+          commentSaveHandler();
           setComment("");
         }}
       >

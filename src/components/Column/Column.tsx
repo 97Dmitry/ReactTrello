@@ -21,9 +21,11 @@ const Column: React.FC<ColumnProps> = ({ column, columnTitle }) => {
   function cardSaveHandler() {
     if (cardNameInput.length) {
       setCardsInfo(() => {
-        const data = {
-          ...cardsInfo,
-          [uuidv4()]: { title: cardNameInput },
+        const data = { ...cardsInfo };
+        data[uuidv4()] = {
+          title: cardNameInput,
+          description: "",
+          comments: {},
         };
         lStorage(column, { ...data });
         return data;
@@ -45,7 +47,12 @@ const Column: React.FC<ColumnProps> = ({ column, columnTitle }) => {
           onChange={(event) => setName(event.target.value)}
           onBlur={() => {
             setIsChangeName(!isChangeName);
-            lStorage(column, { ...lStorage(column), name: name });
+            setCardsInfo(() => {
+              const data = { ...cardsInfo };
+              data.name = name;
+              lStorage(column, { ...data });
+              return data;
+            });
           }}
         />
       )}
