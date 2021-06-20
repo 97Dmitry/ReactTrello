@@ -4,6 +4,14 @@ import { lStorage } from "../../../utils";
 import styled from "styled-components";
 import Comment from "./Comment/Comment";
 
+const AllComments = styled.div`
+  max-height: 400px;
+  overflow: scroll;
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+`;
+
 const CommentInput = styled.textarea`
   border: #2a2a2a 1px solid;
   border-radius: 15px;
@@ -25,40 +33,52 @@ const AddButton = styled.button`
 `;
 
 interface CommentsInterface {
-  cardComments: Record<string, any>;
-  setCardComments: any;
   column: string;
   cardID: string;
+  cardsInfo: Record<string, any>;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
 const Comments: React.FC<CommentsInterface> = ({
-  cardComments,
-  setCardComments,
   column,
   cardID,
+  cardsInfo,
+  setCardsInfo,
 }) => {
-  let [comment, setComment] = useState("");
+  const [comment, setComment] = useState("");
+
+  function commentSaveHandler() {
+    const id = uuidv4();
+    console.log(id);
+    setCardsInfo(() => {
+      const data = cardsInfo;
+      data[cardID]["comments"][id] = {
+        comment,
+        author: localStorage.getItem("username"),
+      };
+      lStorage(column, { ...data });
+      return data;
+    });
+  }
 
   return (
     <>
-      {Object.keys(cardComments).length ? (
+      {Object.keys(cardsInfo[cardID]["comments"]).length ? (
         <>
           <p style={{ marginTop: "10px" }}>All comments:</p>
-          {Object.keys(cardComments).reduce<JSX.Element[]>(
-            (acc: JSX.Element[], e) => {
-              acc.push(
+          <AllComments>
+            {Object.keys(cardsInfo[cardID]["comments"]).map((e: string) => {
+              return (
                 <Comment
-                  cardComments={cardComments}
-                  setCardComments={setCardComments}
+                  cardsInfo={cardsInfo}
+                  setCardsInfo={setCardsInfo}
                   cardID={cardID}
                   commentID={e}
                   column={column}
                   key={e}
                 />
               );
-              return acc;
-            },
-            []
-          )}
+            })}
+          </AllComments>
         </>
       ) : null}
 
@@ -66,33 +86,14 @@ const Comments: React.FC<CommentsInterface> = ({
       <CommentInput
         value={comment}
         onChange={(event) => {
-          setComment((comment = event.target.value));
+          setComment(event.target.value);
         }}
         placeholder={"Write something"}
       />
       <AddButton
         onClick={() => {
-          const id = uuidv4();
-          setCardComments(
-            (cardComments = {
-              ...cardComments,
-              [id]: {
-                comment,
-                author: localStorage.getItem("username"),
-              },
-            })
-          );
-          lStorage(column, {
-            ...lStorage(column),
-            [cardID]: {
-              ...lStorage(column)[cardID],
-              comments: {
-                ...lStorage(column)[cardID]["comments"],
-                [id]: { comment, author: localStorage.getItem("username") },
-              },
-            },
-          });
-          setComment((comment = ""));
+          commentSaveHandler();
+          setComment("");
         }}
       >
         Add comment

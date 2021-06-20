@@ -16,7 +16,16 @@ export const ColumnTitle = styled.p`
   padding: 15px;
 `;
 
-export const NameInput = styled.input`
+export const CardList = styled.div`
+  max-height: 600px;
+  overflow: scroll;
+  ::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+`;
+
+export const ColumnNameInput = styled.input`
   font-size: 30px;
   font-weight: 700;
   margin: 15px;

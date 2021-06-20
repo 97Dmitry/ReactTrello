@@ -41,23 +41,26 @@ const Input = styled.input.attrs({
 `;
 
 const NameProtector: React.FC = () => {
-  let [inp, setInp] = useState("");
-  let [isActive, setIsActive] = useState(
+  const [inputName, setInputName] = useState("");
+  const [isActive, setIsActive] = useState(
     localStorage.getItem("username") ? 0 : 1
   );
+
+  function nameSaveHandler(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.code === "Enter" && inputName.length > 0) {
+      localStorage.setItem("username", inputName);
+      setIsActive(0);
+    }
+  }
+
   return (
     <NameProtectorComponent isActive={isActive}>
       <Content>
         <Title>Choose your username</Title>
         <Input
-          value={inp}
-          onChange={(event) => setInp((inp = event.target.value))}
-          onKeyPress={(event) => {
-            if (event.code === "Enter" && inp.length > 0) {
-              localStorage.setItem("username", inp);
-              setIsActive((isActive = 0));
-            }
-          }}
+          value={inputName}
+          onChange={(event) => setInputName(event.target.value)}
+          onKeyPress={nameSaveHandler}
         />
       </Content>
     </NameProtectorComponent>

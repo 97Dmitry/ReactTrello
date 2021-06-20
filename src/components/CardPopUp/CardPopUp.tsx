@@ -23,7 +23,7 @@ const CardPopUpComponent = styled.div`
 `;
 
 const Content = styled.div`
-  width: 60%;
+  width: 50%;
   padding: 20px;
   border-radius: 15px;
   background: white;
@@ -39,36 +39,31 @@ const CloseButton = styled.button`
 
 interface CardPopUpInterface {
   cardName: string;
-  setCardNameState: any;
+  setCardName: React.Dispatch<string>;
   column: string;
-  columnName: string;
+  columnTitle: string;
   cardID: string;
   cardsInfo: Record<string, any>;
-  setCardsInfo: any;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
   isActive: boolean;
-  setIsActive: any;
-  cardComments: Record<string, any>;
-  setCardComments: any;
+  setIsActive: React.Dispatch<boolean>;
 }
 
 const CardPopUp: React.FC<CardPopUpInterface> = ({
   cardName,
-  setCardNameState,
+  setCardName,
   column,
-  columnName,
+  columnTitle,
   cardID,
   cardsInfo,
   setCardsInfo,
   isActive,
   setIsActive,
-  cardComments,
-  setCardComments,
 }) => {
   useEffect(() => {
     const escFunction = (event: KeyboardEvent) => {
       if (isActive && event.code === "Escape") {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        setIsActive((isActive = false));
+        setIsActive(!isActive);
       }
     };
     document.addEventListener("keydown", escFunction, false);
@@ -76,12 +71,21 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
     return () => {
       document.removeEventListener("keydown", escFunction, false);
     };
-  }, []);
+  }, [isActive, setIsActive]);
+
+  function cardNameChangeHandler() {
+    setCardsInfo(() => {
+      const data = { ...cardsInfo };
+      data[cardID]["title"] = cardName;
+      lStorage(column, { ...data });
+      return data;
+    });
+  }
 
   return (
     <CardPopUpComponent>
       <CloseButton onClick={() => setIsActive((isActive = !isActive))}>
-        <i className="material-icons" style={{ fontSize: "45px" }}>
+        <i className="material-icons" style={{ fontSize: "55px" }}>
           close
         </i>
       </CloseButton>
@@ -99,21 +103,18 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
             }}
             value={cardName}
             onChange={(event) => {
-              setCardNameState((cardName = event.target.value));
+              setCardName((cardName = event.target.value));
             }}
             onBlur={(event) => {
               event.target.style.outline = "none";
-              lStorage(column, {
-                ...lStorage(column),
-                [cardID]: { ...lStorage(column)[cardID], title: cardName },
-              });
+              cardNameChangeHandler();
             }}
           />
         </>
         <p>
           in column:{" "}
           <span style={{ fontSize: "18px", fontWeight: 700 }}>
-            {columnName}
+            {columnTitle}
           </span>
         </p>
         <p>
@@ -122,12 +123,17 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
             {localStorage.getItem("username")}
           </span>
         </p>
-        <Description cardID={cardID} column={column} />
-        <Comments
-          cardComments={cardComments}
-          setCardComments={setCardComments}
+        <Description
           cardID={cardID}
           column={column}
+          cardsInfo={cardsInfo}
+          setCardsInfo={setCardsInfo}
+        />
+        <Comments
+          cardID={cardID}
+          column={column}
+          cardsInfo={cardsInfo}
+          setCardsInfo={setCardsInfo}
         />
       </Content>
     </CardPopUpComponent>

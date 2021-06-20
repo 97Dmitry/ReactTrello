@@ -18,18 +18,38 @@ interface CommentInterface {
   commentID: string;
   column: string;
   cardID: string;
-  cardComments: Record<string, any>;
-  setCardComments: any;
+  cardsInfo: Record<string, any>;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
 
 const Comment: React.FC<CommentInterface> = ({
   commentID,
   cardID,
   column,
-  cardComments,
-  setCardComments,
+  cardsInfo,
+  setCardsInfo,
 }) => {
-  let [comment, setComment] = useState(cardComments[commentID]["comment"]);
+  const [comment, setComment] = useState(
+    cardsInfo[cardID]["comments"][commentID]["comment"]
+  );
+
+  function changeCommentHandler() {
+    setCardsInfo(() => {
+      const data = { ...cardsInfo };
+      data[cardID]["comments"][commentID]["comment"] = comment;
+      lStorage(column, { ...data });
+      return data;
+    });
+  }
+
+  function commentDeleteHandler() {
+    setCardsInfo(() => {
+      const data = { ...cardsInfo };
+      delete data[cardID]["comments"][commentID];
+      lStorage(column, { ...data });
+      return data;
+    });
+  }
 
   return (
     <CommentComponent>
@@ -45,7 +65,7 @@ const Comment: React.FC<CommentInterface> = ({
         <TextareaAutosize
           value={comment}
           style={{
-            width: "100%",
+            width: "95%",
             fontSize: "20px",
             resize: "none",
           }}
@@ -53,34 +73,21 @@ const Comment: React.FC<CommentInterface> = ({
             event.target.style.outline = "2px solid #0079bf";
           }}
           onChange={(event) => {
-            setComment((comment = event.target.value));
+            setComment(event.target.value);
           }}
           onBlur={(event) => {
             event.target.style.outline = "none";
-            const newCardComments = { ...cardComments };
-            newCardComments[commentID]["comment"] = event.target.value;
-            setCardComments((cardComments = { ...newCardComments }));
-            const storage = lStorage(column);
-            storage[cardID]["comments"][commentID]["comment"] =
-              event.target.value;
-            lStorage(column, { ...storage });
+            changeCommentHandler();
           }}
         />
 
-        <p>Author: {cardComments[commentID]["author"]}</p>
+        <p>Author: {cardsInfo[cardID]["comments"][commentID]["author"]}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Button
           variant="contained"
           color="secondary"
-          onClick={(event: any) => {
-            const newCardComments = { ...cardComments };
-            delete newCardComments[commentID];
-            setCardComments((cardComments = { ...newCardComments }));
-            const storage = lStorage(column);
-            delete storage[cardID]["comments"][commentID];
-            lStorage(column, { ...storage });
-          }}
+          onClick={commentDeleteHandler}
         >
           Delete
         </Button>

@@ -14,10 +14,10 @@ const BoardStyle = styled.div`
 const Board: React.FC = () => {
   return (
     <BoardStyle>
-      <Column columnName={"todo"} columnText={"TODO"} />
-      <Column columnName={"progress"} columnText={"In Progress"} />
-      <Column columnName={"testing"} columnText={"Testing"} />
-      <Column columnName={"done"} columnText={"Done"} />
+      <Column column={"todo"} columnTitle={"TODO"} />
+      <Column column={"progress"} columnTitle={"In Progress"} />
+      <Column column={"testing"} columnTitle={"Testing"} />
+      <Column column={"done"} columnTitle={"Done"} />
     </BoardStyle>
   );
 };
