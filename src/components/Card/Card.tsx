@@ -38,43 +38,43 @@ const Delete = styled.button`
 interface CardInterface {
   cardName: string;
   column: string;
-  columnName: string;
+  columnTitle: string;
   cardID: string;
   cardsInfo: Record<string, any>;
-  setCardsInfo: any;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
 }
 
 const Card: React.FC<CardInterface> = ({
   cardName,
   cardID,
   column,
-  columnName,
+  columnTitle,
   cardsInfo,
   setCardsInfo,
 }) => {
-  let [popUpIsActive, setPopUpIsActive] = useState(false);
-  let [cardNameState, setCardNameState] = useState(cardName);
-  let [cardComments, setCardComments] = useState<Record<string, any>>(
-    lStorage(column)[cardID]["comments"] || {}
+  const [popUpIsActive, setPopUpIsActive] = useState(false);
+  const [cardNameState, setCardNameState] = useState(cardName);
+  const [cardComments, setCardComments] = useState<Record<string, any>>(
+    lStorage(column)?.[cardID]?.["comments"] || {}
   );
+
+  function cardDeleteHandler() {
+    setCardsInfo(() => {
+      const data = cardsInfo;
+      delete data[cardID];
+      lStorage(column, { ...data });
+      return data;
+    });
+  }
 
   return (
     <>
       <CardComponent
-        onClick={() => setPopUpIsActive((popUpIsActive = !popUpIsActive))}
+        onClick={() => setPopUpIsActive(() => !popUpIsActive)}
         data-type="Card"
       >
         <CardText>{cardNameState}</CardText>
-        <Delete
-          onClick={() => {
-            delete cardsInfo[cardID];
-            const newArr = cardsInfo;
-            setCardsInfo((cardsInfo = { ...newArr }));
-            let newStorage = lStorage(column);
-            delete newStorage[cardID];
-            lStorage(column, newStorage);
-          }}
-        >
+        <Delete onClick={cardDeleteHandler}>
           <i className="material-icons">delete</i>
         </Delete>
         {Object.keys(cardComments).length ? (
@@ -91,7 +91,7 @@ const Card: React.FC<CardInterface> = ({
           setCardNameState={setCardNameState}
           cardID={cardID}
           column={column}
-          columnName={columnName}
+          columnTitle={columnTitle}
           cardsInfo={cardsInfo}
           setCardsInfo={setCardsInfo}
           isActive={popUpIsActive}

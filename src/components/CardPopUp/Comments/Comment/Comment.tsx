@@ -19,7 +19,7 @@ interface CommentInterface {
   column: string;
   cardID: string;
   cardComments: Record<string, any>;
-  setCardComments: any;
+  setCardComments: React.Dispatch<Record<string, any>>;
 }
 
 const Comment: React.FC<CommentInterface> = ({
@@ -29,7 +29,7 @@ const Comment: React.FC<CommentInterface> = ({
   cardComments,
   setCardComments,
 }) => {
-  let [comment, setComment] = useState(cardComments[commentID]["comment"]);
+  const [comment, setComment] = useState(cardComments[commentID]["comment"]);
 
   return (
     <CommentComponent>
@@ -45,7 +45,7 @@ const Comment: React.FC<CommentInterface> = ({
         <TextareaAutosize
           value={comment}
           style={{
-            width: "100%",
+            width: "95%",
             fontSize: "20px",
             resize: "none",
           }}
@@ -53,7 +53,7 @@ const Comment: React.FC<CommentInterface> = ({
             event.target.style.outline = "2px solid #0079bf";
           }}
           onChange={(event) => {
-            setComment((comment = event.target.value));
+            setComment(event.target.value);
           }}
           onBlur={(event) => {
             event.target.style.outline = "none";

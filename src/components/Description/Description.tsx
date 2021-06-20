@@ -12,9 +12,17 @@ interface DescriptionInterface {
   cardID: string;
 }
 const Description: React.FC<DescriptionInterface> = ({ column, cardID }) => {
-  let [description, setDescription] = useState(
+  const [description, setDescription] = useState(
     lStorage(column)[cardID]["description"] || ""
   );
+
+  function descriptionSaveHandler() {
+    lStorage(column, {
+      ...lStorage(column),
+      [cardID]: { ...lStorage(column)[cardID], description },
+    });
+  }
+
   return (
     <DescriptionComponent>
       <p style={{ marginBottom: "10px" }}>Card description: </p>
@@ -31,7 +39,7 @@ const Description: React.FC<DescriptionInterface> = ({ column, cardID }) => {
           event.target.style.outline = "2px solid #0079bf";
         }}
         onChange={(event) => {
-          setDescription((description = event.target.value));
+          setDescription(event.target.value);
         }}
         onBlur={(event) => {
           event.target.style.outline = "none";
@@ -40,12 +48,7 @@ const Description: React.FC<DescriptionInterface> = ({ column, cardID }) => {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => {
-          lStorage(column, {
-            ...lStorage(column),
-            [cardID]: { ...lStorage(column)[cardID], description },
-          });
-        }}
+        onClick={descriptionSaveHandler}
       >
         Save or change
       </Button>

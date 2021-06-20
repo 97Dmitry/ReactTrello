@@ -23,7 +23,7 @@ const CardPopUpComponent = styled.div`
 `;
 
 const Content = styled.div`
-  width: 60%;
+  width: 50%;
   padding: 20px;
   border-radius: 15px;
   background: white;
@@ -39,23 +39,23 @@ const CloseButton = styled.button`
 
 interface CardPopUpInterface {
   cardName: string;
-  setCardNameState: any;
+  setCardNameState: React.Dispatch<string>;
   column: string;
-  columnName: string;
+  columnTitle: string;
   cardID: string;
   cardsInfo: Record<string, any>;
-  setCardsInfo: any;
+  setCardsInfo: React.Dispatch<Record<string, any>>;
   isActive: boolean;
-  setIsActive: any;
+  setIsActive: React.Dispatch<boolean>;
   cardComments: Record<string, any>;
-  setCardComments: any;
+  setCardComments: React.Dispatch<Record<string, any>>;
 }
 
 const CardPopUp: React.FC<CardPopUpInterface> = ({
   cardName,
   setCardNameState,
   column,
-  columnName,
+  columnTitle,
   cardID,
   cardsInfo,
   setCardsInfo,
@@ -113,7 +113,7 @@ const CardPopUp: React.FC<CardPopUpInterface> = ({
         <p>
           in column:{" "}
           <span style={{ fontSize: "18px", fontWeight: 700 }}>
-            {columnName}
+            {columnTitle}
           </span>
         </p>
         <p>

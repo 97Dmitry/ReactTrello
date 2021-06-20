@@ -4,6 +4,14 @@ import { lStorage } from "../../../utils";
 import styled from "styled-components";
 import Comment from "./Comment/Comment";
 
+const AllComments = styled.div`
+  max-height: 400px;
+  overflow: scroll;
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+`;
+
 const CommentInput = styled.textarea`
   border: #2a2a2a 1px solid;
   border-radius: 15px;
@@ -26,7 +34,7 @@ const AddButton = styled.button`
 
 interface CommentsInterface {
   cardComments: Record<string, any>;
-  setCardComments: any;
+  setCardComments: React.Dispatch<Record<string, any>>;
   column: string;
   cardID: string;
 }
@@ -36,29 +44,31 @@ const Comments: React.FC<CommentsInterface> = ({
   column,
   cardID,
 }) => {
-  let [comment, setComment] = useState("");
+  const [comment, setComment] = useState("");
 
   return (
     <>
       {Object.keys(cardComments).length ? (
         <>
           <p style={{ marginTop: "10px" }}>All comments:</p>
-          {Object.keys(cardComments).reduce<JSX.Element[]>(
-            (acc: JSX.Element[], e) => {
-              acc.push(
-                <Comment
-                  cardComments={cardComments}
-                  setCardComments={setCardComments}
-                  cardID={cardID}
-                  commentID={e}
-                  column={column}
-                  key={e}
-                />
-              );
-              return acc;
-            },
-            []
-          )}
+          <AllComments>
+            {Object.keys(cardComments).reduce<JSX.Element[]>(
+              (acc: JSX.Element[], e) => {
+                acc.push(
+                  <Comment
+                    cardComments={cardComments}
+                    setCardComments={setCardComments}
+                    cardID={cardID}
+                    commentID={e}
+                    column={column}
+                    key={e}
+                  />
+                );
+                return acc;
+              },
+              []
+            )}
+          </AllComments>
         </>
       ) : null}
 
@@ -66,7 +76,7 @@ const Comments: React.FC<CommentsInterface> = ({
       <CommentInput
         value={comment}
         onChange={(event) => {
-          setComment((comment = event.target.value));
+          setComment(event.target.value);
         }}
         placeholder={"Write something"}
       />
@@ -92,7 +102,7 @@ const Comments: React.FC<CommentsInterface> = ({
               },
             },
           });
-          setComment((comment = ""));
+          setComment("");
         }}
       >
         Add comment
